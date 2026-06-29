@@ -1,6 +1,11 @@
 (function () {
-  const data = window.HUAWEI_PRODUCTS_DATA || window.H3C_PRODUCTS_DATA || { records: [] };
-  const records = (data.records || []).map((record) => {
+  const sourceDatas = [
+    { vendor: "华为", data: window.HUAWEI_PRODUCTS_DATA },
+    { vendor: "华三", data: window.H3C_PRODUCTS_DATA },
+  ].filter((source) => source.data && Array.isArray(source.data.records));
+
+  const data = combineSources(sourceDatas);
+  const records = data.records.map((record) => {
     const portProfile = analyzePorts(record);
     const heightU = extractHeightU(record);
     const enhanced = {
@@ -47,6 +52,7 @@
   ];
 
   const state = {
+    vendor: "全部",
     role: "全部",
     quick: new Set(),
   };
@@ -59,6 +65,7 @@
     portSpeed: document.querySelector("#portSpeed"),
     maxHeightU: document.querySelector("#maxHeightU"),
     sortSelect: document.querySelector("#sortSelect"),
+    vendorFilter: document.querySelector("#vendorFilter"),
     roleFilter: document.querySelector("#roleFilter"),
     quickFilters: document.querySelector("#quickFilters"),
     results: document.querySelector("#results"),
@@ -72,6 +79,27 @@
   };
 
   init();
+
+  function combineSources(sources) {
+    const records = sources.flatMap((source) =>
+      source.data.records.map((record) => ({
+        ...record,
+        vendor: normalizeVendor(record.vendor || source.vendor),
+        _sourceName: source.data.sourceName || "",
+        _sourceUrl: source.data.sourceUrl || "",
+      })),
+    );
+    const generatedTimes = sources
+      .map((source) => new Date(source.data.generatedAt).getTime())
+      .filter((time) => Number.isFinite(time));
+    return {
+      generatedAt: generatedTimes.length ? new Date(Math.max(...generatedTimes)).toISOString() : "",
+      seriesCount: new Set(records.map((record) => `${record.vendor}:${record.url}`)).size,
+      recordCount: records.length,
+      sourceCount: sources.length,
+      records,
+    };
+  }
 
   function init() {
     renderStats();
@@ -111,6 +139,16 @@
     ].forEach((element) => {
       element.addEventListener("input", render);
       element.addEventListener("change", render);
+    });
+
+    els.vendorFilter.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-vendor]");
+      if (!button) return;
+      state.vendor = button.dataset.vendor;
+      els.vendorFilter.querySelectorAll("button").forEach((item) => {
+        item.setAttribute("aria-pressed", String(item === button));
+      });
+      render();
     });
 
     els.roleFilter.addEventListener("click", (event) => {
@@ -165,8 +203,12 @@
       els.portSpeed.value = "";
       els.maxHeightU.value = "";
       els.sortSelect.value = "relevance";
+      state.vendor = "全部";
       state.role = "全部";
       state.quick.clear();
+      els.vendorFilter.querySelectorAll("button").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.vendor === "全部"));
+      });
       els.roleFilter.querySelectorAll("button").forEach((button) => {
         button.setAttribute("aria-pressed", String(button.dataset.role === "全部"));
       });
@@ -193,6 +235,7 @@
         _score: scoreRecord(record, queryTokens, quickTerms),
       }))
       .filter((record) => {
+        if (state.vendor !== "全部" && record.vendor !== state.vendor) return false;
         if (state.role !== "全部" && record.role !== state.role) return false;
         if (minPorts !== null && record._portTotal < minPorts) return false;
         if (portSpeed !== null && !record._portSpeeds.includes(portSpeed)) return false;
@@ -506,6 +549,7 @@
         <div class="result-body">
           <div class="device-head">
             <div class="card-top">
+              <span class="vendor-tag ${record.vendor === "华三" ? "h3c" : "huawei"}">${escapeHtml(record.vendor)}</span>
               <span class="tag">${escapeHtml(trimRole(record.role))}</span>
               <span class="group">${escapeHtml(record.scenario || record.seriesGroup || record.listingTitle)}</span>
             </div>
@@ -569,6 +613,7 @@
 
   function buildOneLine(record) {
     return [
+      record.vendor,
       record.model,
       record._heightU ? `${formatNumber(record._heightU)}U` : "高度未列明",
       record._portSummary.length ? `端口：${record._portSummary.join("，")}` : "端口按板卡/模块配置",
@@ -657,6 +702,7 @@
     return normalizeText(
       [
         record.vendor,
+        record.vendor === "华三" ? "h3c 新华三" : "huawei 华为",
         record.role,
         record.scenario,
         record.seriesGroup,
@@ -764,8 +810,15 @@
     return String(role || "").replace("交换机", "");
   }
 
+  function normalizeVendor(value) {
+    const text = String(value || "").toLowerCase();
+    if (text.includes("h3c") || text.includes("华三") || text.includes("新华三")) return "华三";
+    if (text.includes("huawei") || text.includes("华为")) return "华为";
+    return value || "未知";
+  }
+
   function shortModel(model) {
-    const value = String(model || "Huawei");
+    const value = String(model || "Switch");
     return value.length > 14 ? `${value.slice(0, 14)}…` : value;
   }
 
@@ -786,6 +839,6 @@
 function makeThumbFallback(model) {
   const div = document.createElement("div");
   div.className = "thumb thumb-placeholder";
-  div.textContent = String(model || "Huawei").slice(0, 14);
+  div.textContent = String(model || "Switch").slice(0, 14);
   return div;
 }
