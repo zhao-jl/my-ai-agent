@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>华为数据中心交换机参数索引</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="top-band">
+        <div class="shell">
+          <div class="brand-row">
+            <div>
+              <p class="eyebrow">华为企业业务官网公开产品页</p>
+              <h1>华为数据中心交换机参数索引</h1>
+            </div>
+            <a class="source-link" href="https://e.huawei.com/cn/products/switches/data-center-switches" target="_blank" rel="noreferrer">官网栏目</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell workspace">
+        <aside class="index-sidebar" aria-label="选型索引">
+          <div class="sidebar-head">
+            <p class="eyebrow">选型索引</p>
+            <button type="button" id="resetButton" class="ghost-button">重置</button>
+          </div>
+
+          <div class="summary-grid">
+            <div>
+              <span id="statSeries">-</span>
+              <b>系列页</b>
+            </div>
+            <div>
+              <span id="statRecords">-</span>
+              <b>型号</b>
+            </div>
+            <div>
+              <span id="statMetrics">-</span>
+              <b>含性能</b>
+            </div>
+            <div>
+              <span id="statUpdated">-</span>
+              <b>更新</b>
+            </div>
+          </div>
+
+          <label class="search-box">
+            <span>搜索</span>
+            <input id="searchInput" type="search" autocomplete="off" placeholder="型号 / 端口 / 特性" />
+          </label>
+
+          <div class="segmented" id="roleFilter" aria-label="层级筛选">
+            <button type="button" data-role="全部" aria-pressed="true">全部</button>
+            <button type="button" data-role="核心交换机" aria-pressed="false">核心</button>
+            <button type="button" data-role="汇聚交换机" aria-pressed="false">汇聚</button>
+            <button type="button" data-role="接入交换机" aria-pressed="false">接入</button>
+            <button type="button" data-role="存储网络交换机" aria-pressed="false">存储</button>
+          </div>
+
+          <div class="filter-grid">
+            <label>
+              <span>最低端口数</span>
+              <div class="number-input">
+                <input id="minPorts" type="number" min="0" step="1" inputmode="numeric" />
+                <b>个</b>
+              </div>
+            </label>
+            <label>
+              <span>端口带宽</span>
+              <select id="portSpeed">
+                <option value="">不限</option>
+                <option value="10">10G</option>
+                <option value="25">25G</option>
+                <option value="40">40G</option>
+                <option value="100">100G</option>
+                <option value="200">200G</option>
+                <option value="400">400G</option>
+                <option value="800">800G</option>
+              </select>
+            </label>
+            <label>
+              <span>最低交换容量</span>
+              <div class="number-input">
+                <input id="minCapacity" type="number" min="0" step="0.1" inputmode="decimal" />
+                <b>Tbps</b>
+              </div>
+            </label>
+            <label>
+              <span>最低包转发率</span>
+              <div class="number-input">
+                <input id="minForwarding" type="number" min="0" step="1" inputmode="numeric" />
+                <b>Mpps</b>
+              </div>
+            </label>
+            <label>
+              <span>最大高度</span>
+              <div class="number-input">
+                <input id="maxHeightU" type="number" min="0" step="1" inputmode="numeric" />
+                <b>U</b>
+              </div>
+            </label>
+            <label>
+              <span>排序</span>
+              <select id="sortSelect">
+                <option value="relevance">贴近需求</option>
+                <option value="capacity">交换容量高到低</option>
+                <option value="forwarding">包转发率高到低</option>
+                <option value="ports">端口数高到低</option>
+                <option value="height">高度低到高</option>
+                <option value="model">型号 A-Z</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="quick-row" id="quickFilters" aria-label="快捷条件"></div>
+        </aside>
+
+        <section class="results-section">
+          <div class="results-head">
+            <div>
+              <p class="eyebrow">匹配结果</p>
+              <h2 id="resultCount">-</h2>
+            </div>
+          </div>
+          <div id="results" class="results"></div>
+          <div id="emptyState" class="empty-state" hidden>没有匹配的型号</div>
+        </section>
+      </section>
+    </main>
+
+    <script src="data/huawei-products.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>
