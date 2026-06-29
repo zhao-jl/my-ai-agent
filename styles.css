@@ -98,6 +98,13 @@ h1 {
   cursor: pointer;
 }
 
+.source-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .source-link:hover,
 .ghost-button:hover,
 .result-actions a:hover,
@@ -421,6 +428,28 @@ select {
   color: #8e1424;
   font-size: 12px;
   font-weight: 800;
+}
+
+.vendor-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background: #e7f1f9;
+  color: #0d5f8c;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.vendor-tag.h3c {
+  background: #f2e6e8;
+  color: #8e1424;
+}
+
+.vendor-tag.huawei {
+  background: #e7f1f9;
+  color: #0d5f8c;
 }
 
 .group {
