@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>华为数据中心交换机参数索引</title>
-    <link rel="stylesheet" href="assets/styles.css" />
+    <title>华为 + 华三数据中心交换机参数索引</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <main class="app">
@@ -12,10 +12,13 @@
         <div class="shell">
           <div class="brand-row">
             <div>
-              <p class="eyebrow">华为企业业务官网公开产品页</p>
-              <h1>华为数据中心交换机参数索引</h1>
+              <p class="eyebrow">华为 + 华三官网公开产品页</p>
+              <h1>数据中心交换机参数索引</h1>
             </div>
-            <a class="source-link" href="https://e.huawei.com/cn/products/switches/data-center-switches" target="_blank" rel="noreferrer">官网栏目</a>
+            <div class="source-links">
+              <a class="source-link" href="https://e.huawei.com/cn/products/switches/data-center-switches" target="_blank" rel="noreferrer">华为官网</a>
+              <a class="source-link" href="https://www.h3c.com/cn/Products_And_Solution/InterConnect/Products/Switches/" target="_blank" rel="noreferrer">华三官网</a>
+            </div>
           </div>
         </div>
       </section>
@@ -50,6 +53,12 @@
             <span>搜索</span>
             <input id="searchInput" type="search" autocomplete="off" placeholder="型号 / 端口 / 特性" />
           </label>
+
+          <div class="segmented" id="vendorFilter" aria-label="厂商筛选">
+            <button type="button" data-vendor="全部" aria-pressed="true">全部厂商</button>
+            <button type="button" data-vendor="华为" aria-pressed="false">华为</button>
+            <button type="button" data-vendor="华三" aria-pressed="false">华三</button>
+          </div>
 
           <div class="segmented" id="roleFilter" aria-label="层级筛选">
             <button type="button" data-role="全部" aria-pressed="true">全部</button>
@@ -130,7 +139,8 @@
       </section>
     </main>
 
-    <script src="data/huawei-products.js"></script>
-    <script src="assets/app.js"></script>
+    <script src="huawei-products.js"></script>
+    <script src="h3c-products.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
